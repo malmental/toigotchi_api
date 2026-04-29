@@ -1,7 +1,6 @@
 <?php
 
 namespace Tests\Feature\Domain\Pet;
-
 use App\Domain\Pet\Services\PetMoodService;
 use App\Models\Pet;
 use App\Models\User;

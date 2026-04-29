@@ -4,6 +4,7 @@ namespace Tests\Feature\Domain\Pet;
 use App\Domain\Pet\Services\PetDecayService;
 use App\Domain\Pet\Services\PetMoodService;
 use App\Domain\Pet\Services\PetStatBoundaryService;
+use App\Domain\Pet\Services\SpeciesModifierService;
 use App\Models\Pet;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -22,12 +23,14 @@ class PetDecayServiceTest extends TestCase
         parent::setUp();
         $this->decayService = new PetDecayService(
             new PetStatBoundaryService(),
-            new PetMoodService()
+            new PetMoodService(),
+            new SpeciesModifierService()
         );
 
         $user = User::factory()->create();
         $this->pet = Pet::factory()->create([
             'user_id' => $user->id,
+            'species' => 'blobcat',
             'health' => 100,
             'energy' => 100,
             'hunger' => 0,

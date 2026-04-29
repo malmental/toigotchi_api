@@ -12,16 +12,18 @@ class PetDecayService
     public function __construct(
         private PetStatBoundaryService $boundaryService,
         private PetMoodService $moodService,
+        private SpeciesModifierService $speciesService,
     ) {}
 
     public function applyDecay(Pet $pet): Pet
     {
         $stats = PetStats::fromPet($pet);
+        $decayRates = $this->speciesService->getDecayValues($pet->species);
 
         $decay = [
-            'hunger' => min(100, $stats->hunger + 5),
+            'hunger' => min(100, $stats->hunger + $decayRates['hunger']),
             'energy' => max(0, $stats->energy - 3),
-            'cleanliness' => max(0, $stats->cleanliness - 2),
+            'cleanliness' => max(0, $stats->cleanliness - $decayRates['cleanliness']),
         ];
 
         if ($stats->hunger >= 80) {
