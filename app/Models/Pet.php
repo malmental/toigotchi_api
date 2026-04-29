@@ -42,4 +42,9 @@ class Pet extends Model
     {
         return $this->hasMany(PetAction::class);
     }
+
+    public function memories(): HasMany
+    {
+        return $this->hasMany(PetMemory::class);
+    }
 }
