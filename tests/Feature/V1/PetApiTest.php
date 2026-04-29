@@ -22,7 +22,7 @@ class PetApiTest extends TestCase
 
     public function test_can_create_a_pet(): void
     {
-        $response = $this->postJson('/api/pets', [
+        $response = $this->postJson('/api/v1/pets', [
             'name' => 'Mochi',
             'species' => 'blobcat',
         ]);
@@ -35,7 +35,7 @@ class PetApiTest extends TestCase
     {
         Pet::factory()->count(3)->create(['user_id' => $this->user->id]);
 
-        $response = $this->getJson('/api/pets');
+        $response = $this->getJson('/api/v1/pets');
 
         $response->assertOk()->assertJsonCount(3, 'data');
     }
@@ -44,7 +44,7 @@ class PetApiTest extends TestCase
     {
         $pet = Pet::factory()->create(['user_id' => $this->user->id]);
 
-        $response = $this->getJson("/api/pets/{$pet->id}");
+        $response = $this->getJson("/api/v1/pets/{$pet->id}");
 
         $response->assertOk()->assertJsonPath('data.name', $pet->name);
     }
@@ -53,7 +53,7 @@ class PetApiTest extends TestCase
     {
         $pet = Pet::factory()->create(['user_id' => $this->user->id]);
 
-        $response = $this->patchJson("/api/pets/{$pet->id}", [
+        $response = $this->patchJson("/api/v1/pets/{$pet->id}", [
             'name' => 'Pepito',
         ]);
 
@@ -65,7 +65,7 @@ class PetApiTest extends TestCase
     {
         $pet = Pet::factory()->create(['user_id' => $this->user->id]);
 
-        $response = $this->deleteJson("/api/pets/{$pet->id}");
+        $response = $this->deleteJson("/api/v1/pets/{$pet->id}");
 
         $response->assertNoContent();
         $this->assertDatabaseMissing('pets', ['id' => $pet->id]);
@@ -73,14 +73,14 @@ class PetApiTest extends TestCase
 
     public function test_validates_required_name(): void
     {
-        $response = $this->postJson('/api/pets', ['species' => 'blobcat']);
+        $response = $this->postJson('/api/v1/pets', ['species' => 'blobcat']);
 
         $response->assertUnprocessable()->assertJsonValidationErrors(['name']);
     }
 
     public function test_validates_species_must_be_valid(): void
     {
-        $response = $this->postJson('/api/pets', ['name' => 'Mochi', 'species' => 'invalid']);
+        $response = $this->postJson('/api/v1/pets', ['name' => 'Mochi', 'species' => 'invalid']);
 
         $response->assertUnprocessable()->assertJsonValidationErrors(['species']);
     }
@@ -90,7 +90,7 @@ class PetApiTest extends TestCase
         $otherUser = User::factory()->create();
         $pet = Pet::factory()->create(['user_id' => $otherUser->id]);
 
-        $response = $this->getJson("/api/pets/{$pet->id}");
+        $response = $this->getJson("/api/v1/pets/{$pet->id}");
 
         $response->assertForbidden();
     }
