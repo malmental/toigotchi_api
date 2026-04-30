@@ -17,7 +17,7 @@ class PetApiTest extends TestCase
     {
         parent::setUp();
         $this->user = User::factory()->create();
-        $this->actingAs($this->user);
+        $this->actingAs($this->user, 'api');
     }
 
     public function test_can_create_a_pet(): void
