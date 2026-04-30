@@ -24,7 +24,7 @@ class PetChatTest extends TestCase
             'mood' => 'happy',
             'is_alive' => true,
         ]);
-        $this->actingAs($this->user);
+        $this->actingAs($this->user, 'api');
     }
 
     public function test_can_chat_with_pet(): void

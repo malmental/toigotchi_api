@@ -16,7 +16,7 @@ class PetActionTest extends TestCase
     {
         parent::setUp();
         $this->user = User::factory()->create();
-        $this->actingAs($this->user);
+        $this->actingAs($this->user, 'api');
     }
 
     public function test_can_feed_a_pet(): void
