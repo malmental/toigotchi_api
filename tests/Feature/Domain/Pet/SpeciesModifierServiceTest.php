@@ -1,6 +1,7 @@
 <?php
 
 namespace Tests\Feature\Domain\Pet;
+
 use App\Domain\Pet\Services\SpeciesModifierService;
 use Tests\TestCase;
 
@@ -11,7 +12,7 @@ class SpeciesModifierServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->service = new SpeciesModifierService();
+        $this->service = new SpeciesModifierService;
     }
 
     public function test_blobcat_has_default_decay_rates(): void

@@ -1,6 +1,7 @@
 <?php
 
 namespace Tests\Feature\Domain\Pet;
+
 use App\Domain\Pet\Services\PetDecayService;
 use App\Domain\Pet\Services\PetMoodService;
 use App\Domain\Pet\Services\PetStatBoundaryService;
@@ -22,9 +23,9 @@ class PetDecayServiceTest extends TestCase
     {
         parent::setUp();
         $this->decayService = new PetDecayService(
-            new PetStatBoundaryService(),
-            new PetMoodService(),
-            new SpeciesModifierService()
+            new PetStatBoundaryService,
+            new PetMoodService,
+            new SpeciesModifierService
         );
 
         $user = User::factory()->create();

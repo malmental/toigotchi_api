@@ -30,9 +30,6 @@ class PetActionController extends Controller
      * Performs an action on a pet (feed, play, sleep, clean, heal, talk).
      * Each action modifies pet stats according to species modifiers.
      *
-     * @param Request $request
-     * @param Pet $pet
-     * @return JsonResponse
      *
      * @bodyParam type string required The action type (feed, play, sleep, clean, heal, talk)
      * @bodyParam payload object optional Action-specific payload. For feed: { "food": "apple" }. For talk: { "message": "Hello!" }
@@ -49,14 +46,14 @@ class PetActionController extends Controller
 
         $type = PetActionType::tryFrom($request->input('type'));
 
-        if (!$type) {
+        if (! $type) {
             return response()->json([
                 'error' => 'Invalid action type',
                 'valid_types' => array_column(PetActionType::cases(), 'value'),
             ], 422);
         }
 
-        if (!$pet->is_alive) {
+        if (! $pet->is_alive) {
             return response()->json([
                 'error' => 'Pet is dead and cannot perform actions',
             ], 422);
@@ -64,7 +61,7 @@ class PetActionController extends Controller
 
         $payload = $request->input('payload', []);
 
-        if (!$type->validatePayload($payload)) {
+        if (! $type->validatePayload($payload)) {
             return response()->json([
                 'error' => 'Invalid payload for action type',
             ], 422);
@@ -83,9 +80,6 @@ class PetActionController extends Controller
      * Get action history for a pet.
      *
      * Returns a list of all actions performed on a pet.
-     *
-     * @param Pet $pet
-     * @return JsonResponse
      */
     public function history(Pet $pet): JsonResponse
     {

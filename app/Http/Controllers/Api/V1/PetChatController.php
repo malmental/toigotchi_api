@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Api\V1;
 
 use App\Domain\Pet\Services\PetPromptBuilder;
@@ -10,6 +12,7 @@ use App\Models\PetMemory;
 use App\Services\OllamaService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Gate;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
  * Pet chat endpoints for AI-powered conversations.
@@ -32,9 +35,6 @@ class PetChatController extends Controller
      * Sends a message to the pet and returns an AI-generated response.
      * The conversation is stored as a memory for future context.
      *
-     * @param ChatMessageRequest $request
-     * @param Pet $pet
-     * @return JsonResponse
      *
      * @bodyParam message string required The message to send to the pet
      *
@@ -47,7 +47,7 @@ class PetChatController extends Controller
     {
         Gate::authorize('view', $pet);
 
-        if (!$pet->is_alive) {
+        if (! $pet->is_alive) {
             return response()->json([
                 'error' => 'Your pet has passed away and cannot chat.',
             ], 422);
@@ -79,13 +79,58 @@ class PetChatController extends Controller
     }
 
     /**
+     * Stream a chat response from the pet.
+     *
+     * Sends a message and streams the AI response in real-time via SSE.
+     * The conversation is stored as a memory after completion.
+     */
+    public function stream(ChatMessageRequest $request, Pet $pet): StreamedResponse
+    {
+        Gate::authorize('view', $pet);
+
+        if (! $pet->is_alive) {
+            return response()->stream(function () {
+                echo "data: {\"error\": \"Your pet has passed away and cannot chat.\"}\n\n";
+            }, 422, ['Content-Type' => 'text/event-stream']);
+        }
+
+        $message = $request->input('message');
+        $memories = $pet->memories()->recent(5)->get();
+        $prompt = $this->promptBuilder->build($pet, $message, $memories);
+        $fullResponse = '';
+
+        return response()->stream(function () use ($pet, $prompt, $message, &$fullResponse) {
+            $this->ollama->chatStream($prompt, function (string $chunk) use (&$fullResponse) {
+                $fullResponse .= $chunk;
+                echo 'data: {"chunk": '.json_encode($chunk)."}\n\n";
+                ob_flush();
+                flush();
+            });
+
+            echo "data: [DONE]\n\n";
+            ob_flush();
+            flush();
+
+            PetMemory::create([
+                'pet_id' => $pet->id,
+                'type' => 'conversation',
+                'content' => $message,
+                'ai_response' => $fullResponse,
+                'importance' => 5,
+            ]);
+        }, 200, [
+            'Content-Type' => 'text/event-stream',
+            'Cache-Control' => 'no-cache',
+            'Connection' => 'keep-alive',
+            'X-Accel-Buffering' => 'no',
+        ]);
+    }
+
+    /**
      * Get pet memories.
      *
      * Returns the conversation history and important events for a pet.
      * Used to provide context for AI conversations.
-     *
-     * @param Pet $pet
-     * @return JsonResponse
      */
     public function memories(Pet $pet): JsonResponse
     {
@@ -94,7 +139,7 @@ class PetChatController extends Controller
         $memories = $pet->memories()
             ->recent(20)
             ->get()
-            ->map(fn($m) => [
+            ->map(fn ($m) => [
                 'id' => $m->id,
                 'content' => $m->content,
                 'ai_response' => $m->ai_response,

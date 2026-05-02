@@ -1,12 +1,13 @@
 <?php
 
 namespace App\Actions\Pets;
+
 use App\Models\Pet;
 use App\Models\PetAction;
 
 class PlayWithPetAction implements PetActionContract
 {
-public function execute(Pet $pet, array $payload = []): array
+    public function execute(Pet $pet, array $payload = []): array
     {
         $effects = $this->getEffects();
 

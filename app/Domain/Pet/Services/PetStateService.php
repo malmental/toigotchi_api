@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Domain\Pet\Services;
+
 use App\Enums\CleanlinessState;
 use App\Enums\EnergyState;
 use App\Enums\HealthState;
@@ -65,6 +66,7 @@ class PetStateService
             "Cleanliness: {$summary['cleanliness']['description']}",
             "Health: {$summary['health']['description']}",
         ];
+
         return implode(', ', $lines);
     }
 }
