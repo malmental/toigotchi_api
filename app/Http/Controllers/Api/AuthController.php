@@ -8,8 +8,23 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
+/**
+ * Authentication endpoints for user registration, login, and logout.
+ *
+ * @group Authentication
+ */
 class AuthController extends Controller
 {
+    /**
+     * Register a new user.
+     *
+     * Creates a new user account and returns an access token.
+     *
+     * @unauthenticated
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function register(Request $request): JsonResponse
     {
         $validated = $request->validate([
@@ -33,6 +48,16 @@ class AuthController extends Controller
         ], 201);
     }
 
+    /**
+     * Login with email and password.
+     *
+     * Returns a Bearer token for authenticated requests.
+     *
+     * @unauthenticated
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function login(Request $request): JsonResponse
     {
         $validated = $request->validate([
@@ -56,6 +81,13 @@ class AuthController extends Controller
         ]);
     }
 
+    /**
+     * Logout the current user.
+     *
+     * Revokes the current access token.
+     *
+     * @return JsonResponse
+     */
     public function logout(Request $request): JsonResponse
     {
         $request->user()?->token()?->revoke();
@@ -65,6 +97,13 @@ class AuthController extends Controller
         ]);
     }
 
+    /**
+     * Get the authenticated user.
+     *
+     * Returns the current user information.
+     *
+     * @return JsonResponse
+     */
     public function me(Request $request): JsonResponse
     {
         return response()->json($request->user());
