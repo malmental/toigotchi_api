@@ -11,6 +11,14 @@ use App\Services\OllamaService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Gate;
 
+/**
+ * Pet chat endpoints for AI-powered conversations.
+ *
+ * Integrates with Ollama for natural language interaction.
+ * Maintains conversation history as memories for context.
+ *
+ * @group Pet Chat
+ */
 class PetChatController extends Controller
 {
     public function __construct(
@@ -18,6 +26,23 @@ class PetChatController extends Controller
         private PetPromptBuilder $promptBuilder,
     ) {}
 
+    /**
+     * Send a message to a pet.
+     *
+     * Sends a message to the pet and returns an AI-generated response.
+     * The conversation is stored as a memory for future context.
+     *
+     * @param ChatMessageRequest $request
+     * @param Pet $pet
+     * @return JsonResponse
+     *
+     * @bodyParam message string required The message to send to the pet
+     *
+     * @response 200 {
+     *   "reply": "I love playing with you!",
+     *   "pet": { "id": 1, "name": "Mochi", "mood": "happy" }
+     * }
+     */
     public function chat(ChatMessageRequest $request, Pet $pet): JsonResponse
     {
         Gate::authorize('view', $pet);
@@ -53,6 +78,15 @@ class PetChatController extends Controller
         ]);
     }
 
+    /**
+     * Get pet memories.
+     *
+     * Returns the conversation history and important events for a pet.
+     * Used to provide context for AI conversations.
+     *
+     * @param Pet $pet
+     * @return JsonResponse
+     */
     public function memories(Pet $pet): JsonResponse
     {
         Gate::authorize('view', $pet);
