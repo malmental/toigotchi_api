@@ -21,9 +21,6 @@ class AuthController extends Controller
      * Creates a new user account and returns an access token.
      *
      * @unauthenticated
-     *
-     * @param Request $request
-     * @return JsonResponse
      */
     public function register(Request $request): JsonResponse
     {
@@ -54,9 +51,6 @@ class AuthController extends Controller
      * Returns a Bearer token for authenticated requests.
      *
      * @unauthenticated
-     *
-     * @param Request $request
-     * @return JsonResponse
      */
     public function login(Request $request): JsonResponse
     {
@@ -67,7 +61,7 @@ class AuthController extends Controller
 
         $user = User::where('email', $validated['email'])->first();
 
-        if (!$user || !Hash::check($validated['password'], $user->password)) {
+        if (! $user || ! Hash::check($validated['password'], $user->password)) {
             return response()->json([
                 'message' => 'Invalid credentials',
             ], 401);
@@ -85,8 +79,6 @@ class AuthController extends Controller
      * Logout the current user.
      *
      * Revokes the current access token.
-     *
-     * @return JsonResponse
      */
     public function logout(Request $request): JsonResponse
     {
@@ -101,8 +93,6 @@ class AuthController extends Controller
      * Get the authenticated user.
      *
      * Returns the current user information.
-     *
-     * @return JsonResponse
      */
     public function me(Request $request): JsonResponse
     {

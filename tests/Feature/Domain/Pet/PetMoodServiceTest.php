@@ -1,6 +1,7 @@
 <?php
 
 namespace Tests\Feature\Domain\Pet;
+
 use App\Domain\Pet\Services\PetMoodService;
 use App\Models\Pet;
 use App\Models\User;
@@ -19,7 +20,7 @@ class PetMoodServiceTest extends TestCase
     {
         parent::setUp();
 
-        $this->moodService = new PetMoodService();
+        $this->moodService = new PetMoodService;
 
         $user = User::factory()->create();
 

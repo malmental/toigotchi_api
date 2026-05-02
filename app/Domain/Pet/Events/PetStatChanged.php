@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Domain\Pet\Events;
+
 use App\Models\Pet;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;

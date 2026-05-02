@@ -22,8 +22,6 @@ class PetController extends Controller
      * List all pets for the authenticated user.
      *
      * Returns a collection of pets owned by the authenticated user.
-     *
-     * @return AnonymousResourceCollection
      */
     public function index(): AnonymousResourceCollection
     {
@@ -34,13 +32,18 @@ class PetController extends Controller
      * Create a new pet.
      *
      * Creates a new virtual pet for the authenticated user.
-     *
-     * @param StorePetRequest $request
-     * @return JsonResponse
      */
     public function store(StorePetRequest $request): JsonResponse
     {
-        $pet = auth()->user()->pets()->create($request->validated());
+        $user = auth()->user();
+
+        if ($user->pets()->count() >= 10) {
+            return response()->json([
+                'error' => 'Maximum number of pets reached (10). Delete an existing pet to create a new one.',
+            ], 422);
+        }
+
+        $pet = $user->pets()->create($request->validated());
 
         return (new PetResource($pet))
             ->response()
@@ -51,9 +54,6 @@ class PetController extends Controller
      * Get a specific pet.
      *
      * Returns a single pet by ID. Only the pet owner can view it.
-     *
-     * @param Pet $pet
-     * @return PetResource
      */
     public function show(Pet $pet): PetResource
     {
@@ -66,10 +66,6 @@ class PetController extends Controller
      * Update a pet.
      *
      * Updates a pet's attributes. Only the pet owner can update it.
-     *
-     * @param UpdatePetRequest $request
-     * @param Pet $pet
-     * @return PetResource
      */
     public function update(UpdatePetRequest $request, Pet $pet): PetResource
     {
@@ -84,9 +80,6 @@ class PetController extends Controller
      * Delete a pet.
      *
      * Permanently removes a pet. Only the pet owner can delete it.
-     *
-     * @param Pet $pet
-     * @return JsonResponse
      */
     public function destroy(Pet $pet): JsonResponse
     {

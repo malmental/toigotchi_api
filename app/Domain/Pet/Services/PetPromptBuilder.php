@@ -1,19 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Pet\Services;
 
-use App\Domain\Pet\Services\PetStateService;
+use App\Helpers\SanitizePrompt;
 use App\Models\Pet;
-use App\Models\PetMemory;
 
 class PetPromptBuilder
 {
     public function __construct(
         private PetStateService $stateService,
+        private SanitizePrompt $sanitizer,
     ) {}
 
     public function build(Pet $pet, string $userMessage, $memories = []): string
     {
+        $sanitizedMessage = $this->sanitizer->sanitize($userMessage);
         $stateSummary = $this->stateService->getStateSummary($pet);
 
         $moodDescription = match ($pet->mood) {
@@ -27,7 +30,7 @@ class PetPromptBuilder
         $systemPrompt = $this->buildSystemPrompt($pet, $stateSummary, $moodDescription);
         $memoryContext = $this->buildMemoryContext($memories);
 
-        return $systemPrompt . "\n\n" . $memoryContext . "\n\nUser says: " . $userMessage . "\n\nYour response:";
+        return $systemPrompt."\n\n".$memoryContext."\n\nUser says: ".$sanitizedMessage."\n\nYour response:";
     }
 
     private function buildSystemPrompt(Pet $pet, array $stateSummary, string $moodDescription): string

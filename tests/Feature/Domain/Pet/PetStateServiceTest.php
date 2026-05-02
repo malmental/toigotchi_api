@@ -1,6 +1,7 @@
 <?php
 
 namespace Tests\Feature\Domain\Pet;
+
 use App\Domain\Pet\Services\PetStateService;
 use App\Enums\CleanlinessState;
 use App\Enums\EnergyState;
@@ -22,7 +23,7 @@ class PetStateServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->stateService = new PetStateService();
+        $this->stateService = new PetStateService;
 
         $user = User::factory()->create();
         $this->pet = Pet::factory()->create([
