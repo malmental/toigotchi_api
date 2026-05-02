@@ -6,7 +6,7 @@ AI-powered virtual pet REST API with Passport authentication, pet CRUD operation
     <strong>Base URL</strong>: <code>http://127.0.0.1:8000</code>
 </aside>
 
-    # Tuagotchi API
+    # Toigotchi API
 
     AI-powered virtual pet (Tamagotchi) REST API built with Laravel 13.
 

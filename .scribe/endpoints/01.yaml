@@ -85,7 +85,7 @@ endpoints:
         name: species
         description: ''
         required: true
-        example: blobcat
+        example: foxkid
         type: string
         enumValues:
           - blobcat
@@ -96,7 +96,7 @@ endpoints:
         deprecated: false
     cleanBodyParameters:
       name: b
-      species: blobcat
+      species: foxkid
     fileParameters: []
     responses: []
     responseFields: []
@@ -216,7 +216,7 @@ endpoints:
         name: species
         description: ''
         required: false
-        example: draggle
+        example: foxkid
         type: string
         enumValues:
           - blobcat
@@ -227,7 +227,7 @@ endpoints:
         deprecated: false
     cleanBodyParameters:
       name: b
-      species: draggle
+      species: foxkid
     fileParameters: []
     responses: []
     responseFields: []
