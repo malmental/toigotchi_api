@@ -29,40 +29,6 @@ AI = Behavior
 
 This separation allows independent evolution of each layer without breaking others.
 
-### Domain Structure
-
-```
-app/
-├── Domain/
-│   └── Pet/
-│       ├── Services/                       # Business logic
-│       │   ├── PetDecayService.php
-│       │   ├── PetMoodService.php
-│       │   ├── PetStateService.php
-│       │   ├── PetStatBoundaryService.php
-│       │   └── SpeciesModifierService.php
-│       ├── Events/                         # Domain events
-│       │   ├── PetDied.php
-│       │   └── PetStatChanged.php
-│       └── ValueObjects/                   # Immutable value objects
-│           └── PetStats.php
-├── Actions/Pets/                           # Action pattern implementation
-│   ├── FeedPetAction.php
-│   ├── PlayWithPetAction.php
-│   ├── SleepPetAction.php
-│   └── ...
-├── Enums/                                  # State enums
-│   ├── HungerState.php
-│   ├── EnergyState.php
-│   └── ...
-├── Http/
-│   ├── Controllers/Api/V1/                 # Thin API controllers
-│   └── Requests/                           # Form request validation
-├── Models/                                 # Eloquent models
-└── Services/                               # External services
-    └── OllamaService.php
-```
-
 ### Design Patterns
 
 | Pattern | Implementation |
@@ -341,18 +307,6 @@ php artisan test
 
 ---
 
-## Database Schema
-
-```
-users
-├── pets
-│   ├── pet_actions (action history)
-│   └── pet_memories (AI conversation history)
-└── oauth_* (Passport tables)
-```
-
----
-
 ## Future Phases
 
 - [ ] **Phase 5**: Memory + Personality System
@@ -378,9 +332,3 @@ users
 - **AI**: Ollama (local LLM)
 - **Auth**: Laravel Passport (OAuth)
 - **Testing**: PHPUnit
-
----
-
-## License
-
-MIT License.
