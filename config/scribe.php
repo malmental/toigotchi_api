@@ -11,14 +11,14 @@ use function Knuckles\Scribe\Config\removeStrategies;
 
 return [
     // The HTML <title> for the generated documentation.
-    'title' => 'Tuagotchi API',
+    'title' => 'Toigotchi API',
 
     // A short description of your API. Will be included in the docs webpage, Postman collection and OpenAPI spec.
     'description' => 'AI-powered virtual pet REST API with Passport authentication, pet CRUD operations, actions system, and Ollama AI chat integration.',
 
     // Text to place in the "Introduction" section, right after the `description`. Markdown and HTML are supported.
     'intro_text' => <<<'INTRO'
-            # Tuagotchi API
+            # Toigotchi API
 
             AI-powered virtual pet (Tamagotchi) REST API built with Laravel 13.
 

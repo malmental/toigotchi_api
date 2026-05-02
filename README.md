@@ -1,4 +1,4 @@
-![Tuagotchi](public/images/tuagotchi.png)
+![Toigotchi](public/images/toigotchi_api.png)
 
 # AI-Powered Virtual Pet Simulation
 
@@ -6,7 +6,7 @@
 
 ## Overview
 
-Tuagotchi is a virtual pet API that combines traditional Tamagotchi mechanics with modern AI integration. Pets live, age, and respond dynamically based on their state (hunger, energy, cleanliness, health, mood).
+Toigotchi is a virtual pet API that combines traditional Tamagotchi mechanics with modern AI integration. Pets live, age, and respond dynamically based on their state (hunger, energy, cleanliness, health, mood).
 
 **Key Features:**
 - Real-time stat decay with scheduler-based simulation

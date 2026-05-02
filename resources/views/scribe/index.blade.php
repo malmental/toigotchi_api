@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>Tuagotchi API</title>
+    <title>Toigotchi API</title>
 
     <link href="https://fonts.googleapis.com/css?family=PT+Sans&display=swap" rel="stylesheet">
 
@@ -275,7 +275,7 @@
      style="width: calc((100% - 1800px) / 2 + 300px); padding-left: calc((100% - 1800px) / 2); min-width: 300px; max-height: 100vh">
     <div class="sl-flex sl-items-center sl-mb-5 sl-ml-4">
                 <h4 class="sl-text-paragraph sl-leading-snug sl-font-prose sl-font-semibold sl-text-heading">
-            Tuagotchi API
+            Toigotchi API
         </h4>
     </div>
 
@@ -534,7 +534,7 @@
 
         </div>
         <div class="sl-flex sl-items-center sl-px-4 sl-py-3 sl-border-t">
-            Last updated: April 30, 2026
+            Last updated: May 2, 2026
         </div>
 
         <div class="sl-flex sl-items-center sl-px-4 sl-py-3 sl-border-t">
@@ -548,7 +548,7 @@
         <div class="sl-mb-10">
             <div class="sl-mb-4">
                 <h1 class="sl-text-5xl sl-leading-tight sl-font-prose sl-font-semibold sl-text-heading">
-                    Tuagotchi API
+                    Toigotchi API
                 </h1>
                                     <a title="Download Postman collection" class="sl-mx-1"
                        href="{{ route("scribe.postman") }}" target="_blank">
@@ -566,7 +566,7 @@
 <aside>
     <strong>Base URL</strong>: <code>http://127.0.0.1:8000</code>
 </aside>
-<pre><code># Tuagotchi API
+<pre><code># Toigotchi API
 
 AI-powered virtual pet (Tamagotchi) REST API built with Laravel 13.
 
@@ -2717,7 +2717,7 @@ access-control-allow-origin: *</code></pre>
                 <span>Example:</span> <!-- <span> important for spacing -->
                 <div class="sl-flex sl-flex-1 sl-flex-wrap" style="gap: 4px;">
                     <div class="sl-max-w-full sl-break-all sl-px-1 sl-bg-canvas-tint sl-text-muted sl-rounded sl-border">
-                        blobcat
+                        foxkid
                     </div>
                 </div>
             </div>
@@ -2848,7 +2848,7 @@ access-control-allow-origin: *</code></pre>
                                      style="font-family: var(--font-code); font-size: 12px; line-height: var(--lh-code);"
                                 >{
     "name": "b",
-    "species": "blobcat"
+    "species": "foxkid"
 }</div>
                             </div>
                                             </div>
@@ -2947,7 +2947,7 @@ You can check the Dev Tools console for debugging information.</p>
     --header "Accept: application/json" \
     --data "{
     \"name\": \"b\",
-    \"species\": \"blobcat\"
+    \"species\": \"foxkid\"
 }"
 </code></pre>                                        </div>
                                     </div>
@@ -2968,7 +2968,7 @@ const headers = {
 
 let body = {
     "name": "b",
-    "species": "blobcat"
+    "species": "foxkid"
 };
 
 fetch(url, {
@@ -2994,7 +2994,7 @@ $response = $client-&gt;post(
         ],
         'json' =&gt; [
             'name' =&gt; 'b',
-            'species' =&gt; 'blobcat',
+            'species' =&gt; 'foxkid',
         ],
     ]
 );
@@ -3661,7 +3661,7 @@ access-control-allow-origin: *</code></pre>
                 <span>Example:</span> <!-- <span> important for spacing -->
                 <div class="sl-flex sl-flex-1 sl-flex-wrap" style="gap: 4px;">
                     <div class="sl-max-w-full sl-break-all sl-px-1 sl-bg-canvas-tint sl-text-muted sl-rounded sl-border">
-                        draggle
+                        foxkid
                     </div>
                 </div>
             </div>
@@ -3825,7 +3825,7 @@ access-control-allow-origin: *</code></pre>
                                      style="font-family: var(--font-code); font-size: 12px; line-height: var(--lh-code);"
                                 >{
     "name": "b",
-    "species": "draggle"
+    "species": "foxkid"
 }</div>
                             </div>
                                             </div>
@@ -3924,7 +3924,7 @@ You can check the Dev Tools console for debugging information.</p>
     --header "Accept: application/json" \
     --data "{
     \"name\": \"b\",
-    \"species\": \"draggle\"
+    \"species\": \"foxkid\"
 }"
 </code></pre>                                        </div>
                                     </div>
@@ -3945,7 +3945,7 @@ const headers = {
 
 let body = {
     "name": "b",
-    "species": "draggle"
+    "species": "foxkid"
 };
 
 fetch(url, {
@@ -3971,7 +3971,7 @@ $response = $client-&gt;put(
         ],
         'json' =&gt; [
             'name' =&gt; 'b',
-            'species' =&gt; 'draggle',
+            'species' =&gt; 'foxkid',
         ],
     ]
 );
