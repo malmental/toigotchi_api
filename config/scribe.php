@@ -31,10 +31,9 @@ return [
             - **Mood Engine**: Dynamic mood based on pet stats
 
             ## Authentication
-            All endpoints except `/register` and `/login` require a Bearer token.
-
-            As you scroll, you'll see code examples for working with the API in different programming languages in the dark area to the right (or as part of the content on mobile).
-            You can switch the language used with the tabs at the top right (or from the nav menu at the top left on mobile).
+            All endpoints except `/register` and `/login` require a Bearer token. 
+            Obtain a token by registering and logging in. 
+            Then include it in the `Authorization` header as `Bearer {token}`.
         INTRO,
 
     // The base URL displayed in the docs.
