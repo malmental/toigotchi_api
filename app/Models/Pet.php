@@ -47,4 +47,9 @@ class Pet extends Model
     {
         return $this->hasMany(PetMemory::class);
     }
+
+    public function quota()
+    {
+        return $this->hasOne(PetQuota::class);
+    }
 }
