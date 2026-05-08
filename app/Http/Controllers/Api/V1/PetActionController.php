@@ -6,6 +6,7 @@ use App\Enums\PetActionType;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PetResource;
 use App\Models\Pet;
+use App\Models\PetQuota;
 use App\Services\PetActionManager;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -44,18 +45,38 @@ class PetActionController extends Controller
     {
         Gate::authorize('view', $pet);
 
+        if (! $pet->is_alive) {
+            return response()->json([
+                'error' => 'Pet has passed away and cannot perform actions',
+            ], 422);
+        }
+
+        $quota = $pet->quota ?? PetQuota::create([
+            'pet_id' => $pet->id,
+            'used_count' => 0,
+            'window_start' => now(),
+        ]);
+
+        if (! $quota->canPerformAction()) {
+            $retryAfter = now()->diffInSeconds($quota->resets_at, false);
+
+            return response()->json([
+                'error' => 'Action quota exhausted',
+                'message' => 'You have reached the maximum number of actions. Please wait.',
+                'quota' => [
+                    'used' => $quota->used_count,
+                    'limit' => (int) env('PET_ACTION_QUOTA_LIMIT', 3),
+                    'resets_at' => $quota->resets_at?->toIso8601String(),
+                ],
+            ], 429, ['Retry-After' => max(0, (int) $retryAfter)]);
+        }
+
         $type = PetActionType::tryFrom($request->input('type'));
 
         if (! $type) {
             return response()->json([
                 'error' => 'Invalid action type',
                 'valid_types' => array_column(PetActionType::cases(), 'value'),
-            ], 422);
-        }
-
-        if (! $pet->is_alive) {
-            return response()->json([
-                'error' => 'Pet is dead and cannot perform actions',
             ], 422);
         }
 
@@ -67,12 +88,20 @@ class PetActionController extends Controller
             ], 422);
         }
 
+        $quota->consume();
+
         $effects = $this->actionManager->execute($pet, $type, $payload);
 
         return response()->json([
             'message' => 'Action executed successfully',
             'effects' => $effects,
             'pet' => new PetResource($pet->fresh()),
+            'quota' => [
+                'used' => $quota->used_count + 1,
+                'limit' => (int) env('PET_ACTION_QUOTA_LIMIT', 3),
+                'remaining' => max(0, (int) env('PET_ACTION_QUOTA_LIMIT', 3) - $quota->used_count - 1),
+                'resets_at' => $quota->resets_at?->toIso8601String(),
+            ],
         ]);
     }
 
