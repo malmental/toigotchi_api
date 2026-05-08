@@ -35,7 +35,7 @@ endpoints:
         headers:
           cache-control: 'no-cache, private'
           content-type: application/json
-          access-control-allow-origin: '*'
+          access-control-allow-origin: 'http://localhost:3000'
         description: null
     responseFields: []
     auth:
@@ -85,7 +85,7 @@ endpoints:
         name: species
         description: ''
         required: true
-        example: foxkid
+        example: blobcat
         type: string
         enumValues:
           - blobcat
@@ -96,7 +96,7 @@ endpoints:
         deprecated: false
     cleanBodyParameters:
       name: b
-      species: foxkid
+      species: blobcat
     fileParameters: []
     responses: []
     responseFields: []
@@ -153,7 +153,7 @@ endpoints:
         headers:
           cache-control: 'no-cache, private'
           content-type: application/json
-          access-control-allow-origin: '*'
+          access-control-allow-origin: 'http://localhost:3000'
         description: null
     responseFields: []
     auth:
