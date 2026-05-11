@@ -410,6 +410,52 @@ Response (JSON):
 
 ---
 
+## ACTION QUOTA
+
+### Ver quota actual
+GET /api/v1/pets/{id}/quota
+
+Response (JSON):
+{
+  "used": 2,
+  "limit": 3,
+  "remaining": 1,
+  "resets_at": "2026-05-11T13:00:00Z",
+  "is_exhausted": false,
+  "window_start": "2026-05-11T12:00:00Z"
+}
+
+Cada pet tiene 3 acciones por hora. Cuando se agota, acciones devuelven 429.
+
+---
+
+## DECAY LOGS
+
+### Ver historial de decay
+GET /api/v1/pets/{id}/decay-logs
+
+Response (JSON):
+{
+  "data": [
+    {
+      "id": 1,
+      "pet_id": 1,
+      "hours_elapsed": 3,
+      "changes": {
+        "hunger": 45,
+        "energy": -30,
+        "cleanliness": -24,
+        "health": 0
+      },
+      "created_at": "2026-05-11T12:00:00Z"
+    }
+  ]
+}
+
+Devuelve hasta 20 entradas de las últimas 24h, ordenadas por más reciente.
+
+---
+
 ## AI CHAT
 
 ### Chat con IA
@@ -447,12 +493,17 @@ Response (JSON):
 
 ---
 
-## SCHEDULER (artisan command)
+## SCHEDULER (artisan commands)
 
-### Aplicar decay a todos los pets
+### Aplicar decay por minuto (existente)
 php artisan pets:decay
 
 Se ejecuta automáticamente cada minuto via Schedule::command('pets:decay')->everyMinute();
+
+### Aplicar decay por hora (nuevo)
+php artisan pets:hourly-decay
+
+Runs hourly. Calculates time elapsed since last decay, applies cumulative decay (max 24h cap), y guarda logs en pet_decay_logs.
 
 ---
 
@@ -476,6 +527,8 @@ users
 pets
 pet_actions
 pet_memories
+pet_quotas
+pet_decay_logs
 oauth_clients (Passport)
 oauth_access_tokens (Passport)
 
@@ -514,10 +567,14 @@ Core Application:
 - app/Http/Controllers/Api/PetController.php - CRUD for pets
 - app/Http/Controllers/Api/V1/PetActionController.php - Execute actions and view history
 - app/Http/Controllers/Api/V1/PetChatController.php - AI chat and memories
+- app/Http/Controllers/Api/V1/PetQuotaController.php - Action quota management
+- app/Http/Controllers/Api/V1/PetDecayLogController.php - Decay history logs
 - app/Models/Pet.php - Pet model with relationships
 - app/Models/User.php - User model with OAuthenticatable
 - app/Models/PetAction.php - Action log model
 - app/Models/PetMemory.php - AI conversation memory model
+- app/Models/PetQuota.php - Action quota model
+- app/Models/PetDecayLog.php - Decay history log model
 - app/Services/OllamaService.php - Ollama AI client
 - app/Services/PetActionManager.php - Action dispatcher with match
 
@@ -531,6 +588,12 @@ Domain Layer:
 - app/Domain/Pet/ValueObjects/PetStats.php - Stats value object
 - app/Domain/Pet/Events/PetDied.php - Death event
 - app/Domain/Pet/Events/PetStatChanged.php - Stat change event
+- app/Domain/Pet/Events/PetDecayedWhileAway.php - Hourly decay event
+- app/Domain/Pet/Listeners/LogPetDecay.php - Listener for decay logging
+
+Console Commands:
+- app/Console/Commands/HourlyDecayCommand.php - Hourly decay scheduler command
+- app/Console/Commands/UpdatePetStatsCommand.php - Minute-based decay command
 
 Actions:
 - app/Actions/Pets/FeedPetAction.php
@@ -568,7 +631,7 @@ Tests:
 Documentation:
 - README.md - Comprehensive project documentation
 - Endpoints.md - All endpoints documented for Postman
-- public/docs/ - Scribe generated documentation (needs regeneration)
+- public/docs/ - Scribe generated documentation (http://127.0.0.1:8000/docs)
 
 Rutas actuales:
 POST   /api/register                   [public]
@@ -583,5 +646,7 @@ PUT    /api/v1/pets/{pet}.             [auth]
 DELETE /api/v1/pets/{pet}              [auth]
 POST   /api/v1/pets/{pet}/actions      [auth]
 GET    /api/v1/pets/{pet}/actions      [auth]
+GET    /api/v1/pets/{pet}/quota        [auth]
 POST   /api/v1/pets/{pet}/chat         [auth]
 GET    /api/v1/pets/{pet}/memories     [auth]
+GET    /api/v1/pets/{pet}/decay-logs   [auth]

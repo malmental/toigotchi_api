@@ -121,7 +121,9 @@ endpoints:
       subgroup: ''
       subgroupDescription: ''
       title: 'Get a specific pet.'
-      description: 'Returns a single pet by ID. Only the pet owner can view it.'
+      description: |-
+        Returns a single pet by ID. Only the pet owner can view it.
+        Updates last_visited_at to track user's return.
       authenticated: true
       deprecated: false
     headers:
