@@ -20,6 +20,8 @@ class Pet extends Model
         'cleanliness',
         'mood',
         'is_alive',
+        'last_visited_at',
+        'last_decay_at',
     ];
 
     protected function casts(): array
@@ -30,6 +32,8 @@ class Pet extends Model
             'energy' => 'integer',
             'hunger' => 'integer',
             'cleanliness' => 'integer',
+            'last_visited_at' => 'datetime',
+            'last_decay_at' => 'datetime',
         ];
     }
 
@@ -51,5 +55,10 @@ class Pet extends Model
     public function quota()
     {
         return $this->hasOne(PetQuota::class);
+    }
+
+    public function decayLogs()
+    {
+        return $this->hasMany(PetDecayLog::class);
     }
 }

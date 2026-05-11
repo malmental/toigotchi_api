@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\PetController;
 use App\Http\Controllers\Api\V1\PetActionController;
 use App\Http\Controllers\Api\V1\PetChatController;
+use App\Http\Controllers\Api\V1\PetDecayLogController;
 use App\Http\Controllers\Api\V1\PetQuotaController;
 use Illuminate\Support\Facades\Route;
 
@@ -24,5 +25,6 @@ Route::middleware('auth:api')->group(function () {
         Route::post('pets/{pet}/chat/stream', [PetChatController::class, 'stream'])
             ->middleware('streaming.quota');
         Route::get('pets/{pet}/memories', [PetChatController::class, 'memories']);
+        Route::get('pets/{pet}/decay-logs', [PetDecayLogController::class, 'index']);
     });
 });
