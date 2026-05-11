@@ -54,10 +54,13 @@ class PetController extends Controller
      * Get a specific pet.
      *
      * Returns a single pet by ID. Only the pet owner can view it.
+     * Updates last_visited_at to track user's return.
      */
     public function show(Pet $pet): PetResource
     {
         Gate::authorize('view', $pet);
+
+        $pet->update(['last_visited_at' => now()]);
 
         return new PetResource($pet);
     }
