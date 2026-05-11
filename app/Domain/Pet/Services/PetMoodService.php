@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Domain\Pet\Services;
+
 use App\Domain\Pet\ValueObjects\PetStats;
 use App\Models\Pet;
 
@@ -21,6 +22,7 @@ class PetMoodService
         if ($stats->hunger <= 20 && $stats->health >= 80 && $stats->energy >= 50) {
             return 'happy';
         }
+
         return 'neutral';
     }
 

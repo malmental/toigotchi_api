@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Console\Commands;
+
 use App\Domain\Pet\Services\PetDecayService;
 use Illuminate\Console\Command;
 

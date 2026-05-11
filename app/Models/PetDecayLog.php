@@ -2,25 +2,29 @@
 
 namespace App\Models;
 
-use App\Enums\PetActionType;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class PetAction extends Model
+class PetDecayLog extends Model
 {
+    use HasFactory;
+
+    public $timestamps = false;
+
     protected $fillable = [
         'pet_id',
-        'type',
-        'payload',
-        'effects_applied',
+        'hours_elapsed',
+        'changes',
+        'created_at',
     ];
 
     protected function casts(): array
     {
         return [
-            'type' => PetActionType::class,
-            'payload' => 'array',
-            'effects_applied' => 'array',
+            'hours_elapsed' => 'integer',
+            'changes' => 'array',
+            'created_at' => 'datetime',
         ];
     }
 

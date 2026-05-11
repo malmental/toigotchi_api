@@ -1,6 +1,7 @@
 <?php
 
 namespace Tests\Feature\Domain\Pet;
+
 use App\Domain\Pet\Services\PetStatBoundaryService;
 use App\Models\Pet;
 use App\Models\User;
@@ -18,7 +19,7 @@ class PetStatBoundaryServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->boundaryService = new PetStatBoundaryService();
+        $this->boundaryService = new PetStatBoundaryService;
         $user = User::factory()->create();
         $this->pet = Pet::factory()->create([
             'user_id' => $user->id,

@@ -12,7 +12,7 @@ class PetActionSeeder extends Seeder
     {
         $mochi = Pet::where('name', 'Mochi')->first();
 
-        if (!$mochi) {
+        if (! $mochi) {
             return;
         }
 

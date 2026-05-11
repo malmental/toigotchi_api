@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Pet extends Model
@@ -20,6 +20,8 @@ class Pet extends Model
         'cleanliness',
         'mood',
         'is_alive',
+        'last_visited_at',
+        'last_decay_at',
     ];
 
     protected function casts(): array
@@ -30,6 +32,8 @@ class Pet extends Model
             'energy' => 'integer',
             'hunger' => 'integer',
             'cleanliness' => 'integer',
+            'last_visited_at' => 'datetime',
+            'last_decay_at' => 'datetime',
         ];
     }
 
@@ -46,5 +50,15 @@ class Pet extends Model
     public function memories(): HasMany
     {
         return $this->hasMany(PetMemory::class);
+    }
+
+    public function quota()
+    {
+        return $this->hasOne(PetQuota::class);
+    }
+
+    public function decayLogs()
+    {
+        return $this->hasMany(PetDecayLog::class);
     }
 }

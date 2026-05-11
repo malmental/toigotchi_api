@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Domain\Pet\Services;
+
 use App\Domain\Pet\Events\PetDied;
 use App\Domain\Pet\Events\PetStatChanged;
 use App\Domain\Pet\ValueObjects\PetStats;

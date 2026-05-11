@@ -13,6 +13,7 @@ class PetChatTest extends TestCase
     use RefreshDatabase;
 
     private User $user;
+
     private Pet $pet;
 
     protected function setUp(): void
