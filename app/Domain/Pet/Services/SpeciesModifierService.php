@@ -57,4 +57,14 @@ class SpeciesModifierService
             'cleanliness' => $this->getCleanlinessDecayRate($species),
         ];
     }
+
+    public function getHourlyDecayValues(string $species): array
+    {
+        return [
+            'hunger' => 15,
+            'energy' => 10,
+            'cleanliness' => 8,
+            'health' => 5,
+        ];
+    }
 }
