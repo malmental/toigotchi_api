@@ -9,11 +9,13 @@
 Toigotchi is a virtual pet API that combines traditional Tamagotchi mechanics with modern AI integration. Pets live, age, and respond dynamically based on their state (hunger, energy, cleanliness, health, mood).
 
 **Key Features:**
-- Real-time stat decay with scheduler-based simulation
+- Real-time stat decay with scheduler-based simulation (minute and hourly modes)
 - AI-powered conversations using Ollama (local LLM)
 - Species-specific modifiers affecting gameplay
 - Persistent conversation memory for contextual AI responses
+- Action quota system (3 actions per hour per pet)
 - Domain-driven architecture with clean service separation
+- Decay tracking logs for "welcome back" notifications
 
 ---
 
@@ -37,8 +39,9 @@ This separation allows independent evolution of each layer without breaking othe
 | **Dispatcher** | `PetActionManager` uses `match` expression for action routing |
 | **Service Layer** | Domain logic isolated in `PetDecayService`, `PetMoodService`, etc. |
 | **Value Object** | `PetStats` encapsulates stat clamping and validation |
-| **Event Sourcing** | `PetDied`, `PetStatChanged` events for decoupled workflows |
+| **Event Sourcing** | `PetDied`, `PetStatChanged`, `PetDecayedWhileAway` events for decoupled workflows |
 | **State Enum** | Semantic states (`HungryState`, `EnergyState`) for AI context |
+| **Quota System** | `PetQuota` model tracks per-pet action limits per time window |
 
 ---
 
@@ -106,10 +109,14 @@ Base URL: `/api/v1`
     "cleanliness": 90,
     "mood": "happy",
     "is_alive": true,
+    "last_visited_at": "2026-05-11T12:30:00Z",
+    "last_decay_at": "2026-05-11T12:00:00Z",
     "created_at": "2026-04-29T18:00:00Z"
   }
 }
 ```
+
+> **Note:** `last_visited_at` is updated automatically when fetching a pet. `last_decay_at` tracks when stats were last reduced by the scheduled decay.
 
 ---
 
@@ -140,6 +147,58 @@ Base URL: `/api/v1`
 | `clean` | cleanliness +25, mood +5 | - |
 | `heal` | health +20 | - |
 | `talk` | mood +5 | `{"message": "string"}` |
+
+---
+
+### Action Quota
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/v1/pets/{id}/quota` | Get action quota status |
+
+**Quota Response:**
+```json
+{
+  "used": 2,
+  "limit": 3,
+  "remaining": 1,
+  "resets_at": "2026-05-11T13:00:00Z",
+  "is_exhausted": false,
+  "window_start": "2026-05-11T12:00:00Z"
+}
+```
+
+Each pet allows **3 actions per hour**. When exhausted, actions return `429 Too Many Requests` until the quota resets.
+
+---
+
+### Decay Logs
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/v1/pets/{id}/decay-logs` | Get pet decay history (last 24h) |
+
+**Decay Log Response:**
+```json
+{
+  "data": [
+    {
+      "id": 1,
+      "pet_id": 1,
+      "hours_elapsed": 3,
+      "changes": {
+        "hunger": 45,
+        "energy": -30,
+        "cleanliness": -24,
+        "health": 0
+      },
+      "created_at": "2026-05-11T12:00:00Z"
+    }
+  ]
+}
+```
+
+Returns up to 20 entries from the last 24 hours, ordered by most recent.
 
 ---
 
@@ -181,6 +240,8 @@ Each species has unique decay rates and efficiency modifiers:
 | `foxkid` | +4/min | -3/min | 1.1x | 1.5x |
 | `draggle` | +3/min | -1/min | 0.8x | 0.8x |
 
+> **Note:** Hourly decay rates (-15 hunger, -10 energy, -8 cleanliness) are **universal** across all species and not affected by these modifiers.
+
 ---
 
 ## State System
@@ -216,21 +277,73 @@ Stats are converted to semantic states for better AI prompt generation:
 
 ## Stat Decay System
 
-The simulation runs via Laravel Scheduler:
+The simulation runs via Laravel Scheduler with two decay modes:
+
+### Minute-based Decay (existing pets:decay)
 
 ```bash
 php artisan pets:decay
 ```
 
-**Default Decay Rates (per minute):**
-- Hunger: +5
-- Energy: -3
-- Cleanliness: -2
-- Health: -1 (only when hunger >= 80)
+Applied per minute to simulate continuous stat changes:
 
-**Death Conditions:**
+| Stat | Rate |
+|------|------|
+| Hunger | +5/min |
+| Energy | -3/min |
+| Cleanliness | -2/min |
+| Health | -1/min (only when hunger >= 80) |
+
+### Hourly Decay (recommended)
+
+```bash
+php artisan pets:hourly-decay
+```
+
+Runs every hour. Calculates time elapsed since last decay and applies **cumulative decay** capped at 24 hours max:
+
+| Stat | Rate per Hour | Cap |
+|------|---------------|-----|
+| Hunger | +15/hr | 100 max |
+| Energy | -10/hr | 0 min |
+| Cleanliness | -8/hr | 0 min |
+| Health | -5/hr | only when hunger >= 80 |
+
+**Key Difference:** Hourly decay tracks `last_decay_at` per pet, so returning after being away shows accumulated stat loss via `pet_decay_logs` table.
+
+**Scheduler Configuration:**
+
+```php
+// routes/console.php
+Schedule::command('pets:hourly-decay')
+    ->hourly()
+    ->withoutOverlapping()
+    ->runInBackground();
+```
+
+### Death Conditions
+
 - Hunger reaches 100
 - Health reaches 0
+
+### Decay Log Tracking
+
+When hourly decay runs, each pet's stat changes are logged to `pet_decay_logs` table:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `pet_id` | foreignId | Pet reference |
+| `hours_elapsed` | integer | Hours since last decay (capped at 24) |
+| `changes` | json | Stat delta: `{hunger: +15, energy: -10, ...}` |
+| `created_at` | timestamp | When decay occurred |
+
+**Retrieve Decay Logs:**
+
+```
+GET /api/v1/pets/{id}/decay-logs
+```
+
+Returns up to 20 entries from the last 24 hours, ordered by most recent.
 
 ---
 
@@ -309,10 +422,11 @@ php artisan test
 
 ## Future Phases
 
-- [ ] **Phase 5**: Memory + Personality System
+- [x] **Phase 5**: Memory + Personality System (Implemented)
   - Persistent AI memories with importance scoring
   - Dynamic personality traits based on interaction history
-  - Achievement system integration
+  - Action quota system (3 actions/hour per pet)
+  - Hourly decay with tracking logs
 
 - [ ] **Phase 6**: Multiplayer/Social Features
   - Pet trading

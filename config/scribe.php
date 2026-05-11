@@ -26,13 +26,15 @@ return [
             - **Authentication**: Passport-based token auth
             - **Pet CRUD**: Create, read, update, delete virtual pets
             - **Pet Actions**: Feed, play, sleep, clean, heal, talk
+            - **Action Quota**: 3 actions per hour limit per pet
             - **AI Chat**: AI-powered conversations with memory
-            - **Stat Decay**: Realistic simulation with species modifiers
+            - **Stat Decay**: Minute and hourly decay simulation
+            - **Decay Logs**: Track stats lost while away
             - **Mood Engine**: Dynamic mood based on pet stats
 
             ## Authentication
-            All endpoints except `/register` and `/login` require a Bearer token. 
-            Obtain a token by registering and logging in. 
+            All endpoints except `/register` and `/login` require a Bearer token.
+            Obtain a token by registering and logging in.
             Then include it in the `Authorization` header as `Bearer {token}`.
         INTRO,
 
@@ -186,7 +188,7 @@ return [
 
     'groups' => [
         // Endpoints which don't have a @group will be placed in this default group.
-        'default' => 'Endpoints',
+        'default' => 'Other Endpoints',
 
         // By default, Scribe will sort groups alphabetically, and endpoints in the order their routes are defined.
         // You can override this by listing the groups, subgroups and endpoints here in the order you want them.
@@ -196,7 +198,9 @@ return [
             'Authentication',
             'Pets',
             'Pet Actions',
-            'Pet Chat',
+            'Action Quota',
+            'Decay Logs',
+            'AI Chat',
         ],
     ],
 
