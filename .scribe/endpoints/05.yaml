@@ -1,0 +1,69 @@
+name: 'Decay Logs'
+description: ''
+endpoints:
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: 'api/v1/pets/{pet_id}/decay-logs'
+    metadata:
+      custom: []
+      groupName: 'Decay Logs'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get decay logs for a pet.'
+      description: |-
+        Returns the pet's decay history showing stats lost while away.
+        Logs are retained for 24 hours and limited to 20 most recent entries.
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      pet_id:
+        custom: []
+        name: pet_id
+        description: 'The ID of the pet.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      pet_id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "data": [
+              {
+                "id": 1,
+                "pet_id": 1,
+                "hours_elapsed": 3,
+                "changes": { "hunger": 45, "energy": -30 },
+                "created_at": "2026-05-11T12:00:00Z"
+              }
+            ]
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null

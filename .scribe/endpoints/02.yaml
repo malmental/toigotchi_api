@@ -1,0 +1,143 @@
+name: 'Pet Actions'
+description: ''
+endpoints:
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: 'api/v1/pets/{pet_id}/actions'
+    metadata:
+      custom: []
+      groupName: 'Pet Actions'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Execute a pet action.'
+      description: |-
+        Performs an action on a pet (feed, play, sleep, clean, heal, talk).
+        Each action modifies pet stats according to species modifiers.
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      pet_id:
+        custom: []
+        name: pet_id
+        description: 'The ID of the pet.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      pet_id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      type:
+        custom: []
+        name: type
+        description: 'The action type (feed, play, sleep, clean, heal, talk)'
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      payload:
+        custom: []
+        name: payload
+        description: 'optional Action-specific payload. For feed: { "food": "apple" }. For talk: { "message": "Hello!" }'
+        required: false
+        example: []
+        type: object
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      type: architecto
+      payload: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "message": "Action executed successfully",
+            "effects": { "hunger": -20, "mood": 5 },
+            "pet": { ... }
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: 'api/v1/pets/{pet_id}/actions'
+    metadata:
+      custom: []
+      groupName: 'Pet Actions'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get action history for a pet.'
+      description: 'Returns a list of all actions performed on a pet.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      pet_id:
+        custom: []
+        name: pet_id
+        description: 'The ID of the pet.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      pet_id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 401
+        content: '{"message":"Unauthenticated."}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          access-control-allow-origin: 'http://localhost:3000'
+        description: null
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null

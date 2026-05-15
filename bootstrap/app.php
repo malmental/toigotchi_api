@@ -1,8 +1,11 @@
 <?php
 
+use App\Http\Middleware\EnsureStreamingQuota;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Hashing\HashServiceProvider;
+use Illuminate\Http\Middleware\HandleCors;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -12,12 +15,17 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        $middleware->api(prepend: [
+            HandleCors::class,
+        ]);
+        $middleware->alias([
+            'streaming.quota' => EnsureStreamingQuota::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
     })
     ->withProviders([
-        \Illuminate\Hashing\HashServiceProvider::class,
+        HashServiceProvider::class,
     ])
     ->create();

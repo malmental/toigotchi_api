@@ -1,0 +1,66 @@
+name: 'Action Quota'
+description: ''
+endpoints:
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: 'api/v1/pets/{pet_id}/quota'
+    metadata:
+      custom: []
+      groupName: 'Action Quota'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get current action quota for a pet.'
+      description: |-
+        Shows used/remaining actions and when the quota window resets.
+        When exhausted, action endpoints return 429 Too Many Requests.
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      pet_id:
+        custom: []
+        name: pet_id
+        description: 'The ID of the pet.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      pet_id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "used": 2,
+            "limit": 3,
+            "remaining": 1,
+            "resets_at": "2026-05-11T13:00:00Z",
+            "is_exhausted": false,
+            "window_start": "2026-05-11T12:00:00Z"
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
